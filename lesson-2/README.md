@@ -1,6 +1,26 @@
+# Lesson 2
+- Inspect server.py and see how tools are defined
+- Inspect client.py
+    - Observe how we get tools from client
+    - How agent is created using llm and tools
+    - After running observe the output
 
 
+## How to run?
+- Install dependencies
+```bash
+uv sync
+```
 
+- Start server
+```bash
+uv run server.py
+```
+
+- Run client
+```bash
+uv run client.py
+```
 
 
 ## Expected client output:
