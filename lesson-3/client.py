@@ -26,7 +26,7 @@ async def main():
     print(f"Asking the agent: {query}")
     response = await agent.ainvoke({"messages": query})
 
-    pprint.pprint(response)
+    print(response['messages'][-1].content)
 
 if __name__ == "__main__":
     asyncio.run(main())
