@@ -6,7 +6,9 @@ Learn Model Context Protocol (MCP) through hands-on examples.
 
 1. **Setup**
    - Install uv: https://docs.astral.sh/uv/getting-started/installation/
-   - Set AWS credentials and AWS_REGION
+   - Set AWS credentials and AWS_REGION in env vars
+   - Ensure that model us.anthropic.claude-3-7-sonnet-20250219-v1:0 is granted access from Bedrock service.
+      - Or, if you want to use any other model just change the client.py code in each lesson.
 
 2. **Run Lessons**
    - Navigate to any lesson folder (lesson-1, lesson-2, lesson-3)
