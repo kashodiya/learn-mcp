@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ask a Question</title>
+</head>
+<body>
+    <h1>Ask a Question</h1>
+    <form id="questionForm">
+        <textarea id="question" placeholder="Enter your question here..." rows="4" cols="50">What are the top 5 artists with the most albums in the database?</textarea><br><br>
+        <button type="submit">Submit</button>
+    </form>
+    <div id="answer"></div>
+
+    <script>
+        document.getElementById('questionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const question = document.getElementById('question').value;
+            const answerDiv = document.getElementById('answer');
+            
+            answerDiv.innerHTML = 'Loading...';
+            
+            try {
+                const response = await fetch('/ask', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ question })
+                });
+                
+                const data = await response.json();
+                answerDiv.innerHTML = `<h3>Answer:</h3><pre>${data.answer}</pre>`;
+            } catch (error) {
+                answerDiv.innerHTML = `<p>Error: ${error.message}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -10,4 +10,6 @@ dependencies = [
     "langchain-aws>=0.2.28",
     "langchain-mcp-adapters>=0.1.9",
     "langgraph>=0.5.3",
+    "fastapi>=0.104.0",
+    "uvicorn>=0.24.0",
 ]

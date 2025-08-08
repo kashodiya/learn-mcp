@@ -32,6 +32,9 @@ def execute_sql(query: str) -> str:
         str: The query results formatted as a markdown table.
     """
     try:
+        # Print the generated SQL query
+        print(f"Generated SQL: {query}")
+        
         # Connect to the database
         conn = sqlite3.connect('chinook.db')
         cursor = conn.cursor()
