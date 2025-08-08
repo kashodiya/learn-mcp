@@ -18,8 +18,10 @@ We're using the Chinook SQLite database, which represents a digital media store 
 - `chinook.db`: The SQLite database file
 - `generate_schema.py`: Script to generate a markdown file with the database schema
 - `SCHEMA.md`: Generated file containing the database schema
-- `server.py`: MCP server that exposes tools for database interaction
+- `server.py`: MCP server that exposes tools for database interaction (prints generated SQL)
 - `client.py`: Client that connects to the MCP server and uses an AI agent to query the database
+- `app.py`: FastAPI web application for testing the MCP integration
+- `static/index.html`: Web interface for asking questions about the database
 
 ## Key Concepts
 
@@ -48,6 +50,15 @@ The client demonstrates how to:
 - Create an AI agent with access to these tools
 - Ask the agent to solve a problem that requires SQL knowledge
 
+### 4. Web Interface
+
+The web app (app.py) provides:
+- FastAPI server with static file serving
+- REST API endpoint (/ask) for processing questions
+- HTML interface with JavaScript fetch for real-time interaction
+- Pre-loaded example question about top artists
+- Formatted output display with line breaks preserved
+
 ## How to Run
 
 1. Install dependencies
@@ -65,10 +76,16 @@ python generate_schema.py
 python server.py
 ```
 
-4. In a new terminal, run the client
+4. Test with command line client:
 ```bash
 python client.py
 ```
+
+5. Or test with web app:
+```bash
+uv run uvicorn app:app --reload
+```
+Then open http://localhost:8000 in your browser
 
 ## Expected Output
 
