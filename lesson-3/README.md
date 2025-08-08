@@ -102,3 +102,13 @@ When you run the client, you should see the AI agent:
 2. Add a new tool to the server that provides query suggestions
 3. Extend the schema generation to include indexes and views
 
+## Advance insights
+- Some questions will need more than 1 SQL executed separately. To see that try following:
+    - Create report on what is going on in the company and current status.
+    - Create a dashboard for sales performance, customer information, music inventory
+- Also try something different:
+    - List top analytical questions
+    - Are there scope of optimizing the schema?
+    - Create mermaid code for rendering ERD diagram.
+        - Cut-paste it into: https://mermaid.live/edit to get the digram!
+    - Suggest what schema should be used for datamart.
