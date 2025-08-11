@@ -18,7 +18,7 @@ Learn Model Context Protocol (MCP) through hands-on examples.
 
 - **Lesson 4: Create AI Agent using several MCP server with session and memory support**
    - How to create AI Agent that uses more than one MCP servers
-   - How to keep conversation in the context of s session with memory
+   - How to use agent memory
 
 ## Learning Path
 1. **Prepare your environment**: See section below.
