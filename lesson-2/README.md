@@ -1,3 +1,5 @@
+# IF YOU ARE DOING THE BOOTCAMP, PLEASE FOLLOW EXERCISE.md
+
 # Lesson 2
 - Inspect server.py and see how tools are defined
 - Inspect client.py

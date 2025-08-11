@@ -1,4 +1,4 @@
-
+# IF YOU ARE DOING THE BOOTCAMP, PLEASE FOLLOW EXERCISE.md
 
 # Lesson 3: SQL Database with MCP
 
