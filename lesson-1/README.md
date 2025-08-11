@@ -58,7 +58,7 @@ The client should display:
 - How to connect a client to an MCP server
 - How to list and invoke tools from a client
 
-## How to run the solution in this folder?
+## How to run the solution from this folder?
 - Install dependencies
 ```bash
 uv sync

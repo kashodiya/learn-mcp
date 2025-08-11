@@ -1,103 +1,103 @@
-# IF YOU ARE DOING THE BOOTCAMP, PLEASE FOLLOW EXERCISE.md
+# Exercise 3: SQL Database Integration with MCP
 
-# Lesson 3: SQL Database with MCP
+## Objective
+Create an MCP server that provides AI agents access to a SQLite database through SQL query tools.
 
-In this lesson, we'll create an MCP server that can interact with a SQLite database. The server will expose tools that allow an AI agent to:
+## Step-by-Step Instructions
 
-1. Get the database schema
-2. Execute SQL queries against the database
+### Step 1: Set up the project
+1. Initialize the project with `uv init`
+2. Add dependencies to `pyproject.toml`:
+   ```toml
+   [project]
+   dependencies = [
+       "fastmcp",
+       "langchain-mcp-adapters", 
+       "langgraph",
+       "langchain-aws",
+       "fastapi",
+       "uvicorn"
+   ]
+   ```
+3. Run `uv sync` to install dependencies
+4. Ensure you have the `chinook.db` SQLite database file in your project directory
 
-This demonstrates how MCP can be used to give AI agents access to structured data through SQL.
+### Step 2: Generate Database Schema
+1. Create `generate_schema.py` to extract database schema information
+2. Connect to `chinook.db` using sqlite3
+3. Extract table definitions, columns, and sample data
+4. Generate a `SCHEMA.md` file with the database structure in markdown format
+5. Run the script to create the schema file
 
-## Database
+### Step 3: Create the SQL MCP Server
+1. Create `server.py`
+2. Import required modules: `sqlite3`, `os`, `FastMCP`
+3. Create FastMCP instance named "SQL Database"
+4. Define two tools:
 
-We're using the Chinook SQLite database, which represents a digital media store with tables for artists, albums, tracks, invoices, and customers.
+   **Tool 1: `get_database_schema() -> str`**
+   - Read and return contents of `SCHEMA.md`
+   - Handle FileNotFoundError with appropriate message
 
-## Files in this Lesson
+   **Tool 2: `execute_sql(query: str) -> str`**
+   - Print the SQL query for debugging
+   - Connect to `chinook.db`
+   - Execute the query
+   - For SELECT queries: format results as markdown table
+   - For other queries: return affected row count
+   - Handle sqlite3.Error exceptions
 
-- `chinook.db`: The SQLite database file
-- `generate_schema.py`: Script to generate a markdown file with the database schema
-- `SCHEMA.md`: Generated file containing the database schema
-- `server.py`: MCP server that exposes tools for database interaction (prints generated SQL)
-- `client.py`: Client that connects to the MCP server and uses an AI agent to query the database
-- `app.py`: FastAPI web application for testing the MCP integration
-- `static/index.html`: Web interface for asking questions about the database
+5. Run server on port 50873 with SSE transport
 
-## Key Concepts
+### Step 4: Create the AI Agent Client
+1. Create `client.py`
+2. Set up ChatBedrock LLM and MultiServerMCPClient
+3. Configure client to connect to "http://localhost:50873/sse"
+4. Create React agent with LLM and MCP tools
+5. Ask the agent: "What are the top 5 artists with the most albums in the database?"
+6. Print the agent's final response
 
-### 1. Database Schema Generation
+### Step 5: Create Web Interface (Optional)
+1. Create `app.py` with FastAPI
+2. Add endpoint `/ask` that accepts questions and returns AI responses
+3. Create `static/index.html` with a simple web form
+4. Test the web interface at http://localhost:8000
 
-The `generate_schema.py` script connects to the SQLite database and extracts:
-- Table definitions
-- Column information
-- Foreign key relationships
-- Sample data
+### Step 6: Test Your Implementation
+1. Generate schema: `python generate_schema.py`
+2. Start MCP server: `python server.py`
+3. Test with client: `python client.py`
+4. Optionally test web app: `uv run uvicorn app:app --reload`
 
-This information is formatted as markdown and saved to `SCHEMA.md`.
+### Expected Behavior
+The AI agent should:
+1. First call `get_database_schema` to understand the database structure
+2. Analyze the schema to identify relevant tables (Artist, Album)
+3. Generate appropriate SQL query (JOIN Artist and Album tables, GROUP BY, ORDER BY)
+4. Call `execute_sql` with the generated query
+5. Interpret results and provide a natural language answer
 
-### 2. MCP Tools for Database Interaction
-
-The server exposes two tools:
-
-- `get_database_schema()`: Returns the complete database schema from the SCHEMA.md file
-- `execute_sql(query)`: Executes a SQL query against the database and returns the results
-
-### 3. AI Agent Integration
-
-The client demonstrates how to:
-- Connect to the MCP server
-- Get the available tools
-- Create an AI agent with access to these tools
-- Ask the agent to solve a problem that requires SQL knowledge
-
-### 4. Web Interface
-
-The web app (app.py) provides:
-- FastAPI server with static file serving
-- REST API endpoint (/ask) for processing questions
-- HTML interface with JavaScript fetch for real-time interaction
-- Pre-loaded example question about top artists
-- Formatted output display with line breaks preserved
-
-## How to Run
-
-1. Install dependencies
-```bash
-uv sync
+### Sample SQL Query
+The agent should generate something like:
+```sql
+SELECT a.Name, COUNT(al.AlbumId) as album_count 
+FROM Artist a 
+JOIN Album al ON a.ArtistId = al.ArtistId 
+GROUP BY a.ArtistId, a.Name 
+ORDER BY album_count DESC 
+LIMIT 5
 ```
 
-2. Generate the database schema (already done, but you can re-run if needed)
-```bash
-python generate_schema.py
-```
+## Key Learning Points
+- How to integrate MCP with databases
+- How to provide schema information to AI agents
+- How to handle SQL query execution and error handling
+- How AI agents can reason about database structures
+- How to format database results for AI consumption
+- Building web interfaces for MCP-powered applications
 
-3. Start the MCP server
-```bash
-python server.py
-```
 
-4. Test with command line client:
-```bash
-python client.py
-```
-
-5. Or test with web app:
-```bash
-uv run uvicorn app:app --reload
-```
-Then open http://localhost:8000 in your browser
-
-## Expected Output
-
-When you run the client, you should see the AI agent:
-1. Understand the query
-2. First use the `get_database_schema` tool to understand the database structure
-3. Formulate an appropriate SQL query
-4. Use the `execute_sql` tool to run the query
-5. Interpret the results and provide an answer
-
-## Exercise Ideas
-
+## Advance Exercise Ideas
 1. Modify the client to ask different questions about the database
 2. Add a new tool to the server that provides query suggestions
 3. Extend the schema generation to include indexes and views
@@ -112,3 +112,19 @@ When you run the client, you should see the AI agent:
     - Create mermaid code for rendering ERD diagram.
         - Cut-paste it into: https://mermaid.live/edit to get the digram!
     - Suggest what schema should be used for datamart.
+
+## How to run the solution from this folder?
+- Install dependencies
+```bash
+uv sync
+```
+
+- Start server
+```bash
+uv run server.py
+```
+
+- Run client
+```bash
+uv run client.py
+```

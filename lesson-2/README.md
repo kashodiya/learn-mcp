@@ -1,14 +1,79 @@
-# IF YOU ARE DOING THE BOOTCAMP, PLEASE FOLLOW EXERCISE.md
+# Exercise 2: MCP with AI Agent Integration
 
-# Lesson 2
-- Inspect server.py and see how tools are defined
-- Inspect client.py
-    - Observe how we get tools from client
-    - How agent is created using llm and tools
-    - After running observe the output
+## Objective
+Create an MCP server with multiple math tools and integrate it with an AI agent using LangChain.
+
+## Step-by-Step Instructions
+
+### Step 1: Set up the project
+1. Initialize the project with `uv init`
+2. Add dependencies to `pyproject.toml`:
+   ```toml
+   [project]
+   dependencies = [
+       "fastmcp",
+       "langchain-mcp-adapters",
+       "langgraph",
+       "langchain-aws"
+   ]
+   ```
+3. Run `uv sync` to install dependencies
+
+### Step 2: Create the Math MCP Server
+1. Create `server.py`
+2. Import FastMCP and create an instance named "Math"
+3. Define two tools using `@mcp.tool()` decorator:
+   - `add(a: int, b: int) -> int`: Add two numbers
+   - `multiply(a: int, b: int) -> int`: Multiply two numbers
+4. Run the server on port 8000 with SSE transport
+
+### Step 3: Create the AI Agent Client
+1. Create `client.py`
+2. Import required modules:
+   - `asyncio`, `pprint`
+   - `MultiServerMCPClient` from langchain_mcp_adapters.client
+   - `create_react_agent` from langgraph.prebuilt
+   - `ChatBedrock` from langchain_aws
+3. Create an async main function that:
+   - Initializes ChatBedrock with model "us.anthropic.claude-3-7-sonnet-20250219-v1:0"
+   - Creates MultiServerMCPClient with server config:
+     ```python
+     {
+         "math": {
+             "url": "http://localhost:8000/sse",
+             "transport": "sse",
+         }
+     }
+     ```
+   - Gets tools from the client
+   - Creates a React agent with the LLM and tools
+   - Asks the agent: "what's (3 + 5) x 12?"
+   - Prints the response using pprint
+
+### Step 4: Test Your Implementation
+1. Ensure AWS credentials are configured
+2. Start the server: `uv run server.py`
+3. In another terminal, run the client: `uv run client.py`
+4. Observe how the AI agent:
+   - First calls the `add` tool with (3, 5)
+   - Then calls the `multiply` tool with (8, 12)
+   - Provides the final answer: 96
+
+### Expected Behavior
+The AI agent should:
+1. Break down the problem into steps
+2. Use the `add` tool to calculate (3 + 5) = 8
+3. Use the `multiply` tool to calculate 8 × 12 = 96
+4. Provide a natural language response with the answer
+
+## Key Learning Points
+- How to create multiple tools in an MCP server
+- How to integrate MCP with LangChain adapters
+- How to create AI agents that can use MCP tools
+- How AI agents reason about which tools to use and when
 
 
-## How to run?
+## How to run the solution from this folder?
 - Install dependencies
 ```bash
 uv sync
@@ -22,43 +87,4 @@ uv run server.py
 - Run client
 ```bash
 uv run client.py
-```
-
-
-## Expected client output:
-```json
-{'messages': [HumanMessage(content="what's (3 + 5) x 12?", additional_kwargs={}, response_metadata={}, id='e330b525-5d66-47b7-a14e-8b4b4f4387c9'),
-AIMessage(content="I'll calculate (3 + 5) x 12 for you by breaking it down into steps.\n\nFirst, I need to calculate the sum inside the parentheses (3 + 5):", additional_kwargs={'usage': {'prompt_tokens': 458, 'completion_tokens': 113, 'cache_read_input_tokens': 0, 'cache_write_input_tokens': 0, 'total_tokens': 571
-            }, 'stop_reason': 'tool_use', 'thinking': {}, 'model_id': 'us.anthropic.claude-3-7-sonnet-20250219-v1: 0', 'model_name': 'us.anthropic.claude-3-7-sonnet-20250219-v1: 0'
-        }, response_metadata={'usage': {'prompt_tokens': 458, 'completion_tokens': 113, 'cache_read_input_tokens': 0, 'cache_write_input_tokens': 0, 'total_tokens': 571
-            }, 'stop_reason': 'tool_use', 'thinking': {}, 'model_id': 'us.anthropic.claude-3-7-sonnet-20250219-v1: 0', 'model_name': 'us.anthropic.claude-3-7-sonnet-20250219-v1: 0'
-        }, id='run--d463a117-cf05-4d09-ab18-c7b580086720-0', tool_calls=[
-            {'name': 'add', 'args': {'a': 3, 'b': 5
-                }, 'id': 'toolu_bdrk_01CdtJ3LXr2SGZdvHN3oEwRW', 'type': 'tool_call'
-            }
-        ], usage_metadata={'input_tokens': 458, 'output_tokens': 113, 'total_tokens': 571, 'input_token_details': {'cache_creation': 0, 'cache_read': 0
-            }
-        }),
-ToolMessage(content='8', name='add', id='0a748f69-be62-421d-a87b-3fb4c8925750', tool_call_id='toolu_bdrk_01CdtJ3LXr2SGZdvHN3oEwRW'),
-AIMessage(content="Now that I have the result of (3 + 5) = 8, I'll multiply this by 12:", additional_kwargs={'usage': {'prompt_tokens': 583, 'completion_tokens': 96, 'cache_read_input_tokens': 0, 'cache_write_input_tokens': 0, 'total_tokens': 679
-            }, 'stop_reason': 'tool_use', 'thinking': {}, 'model_id': 'us.anthropic.claude-3-7-sonnet-20250219-v1: 0', 'model_name': 'us.anthropic.claude-3-7-sonnet-20250219-v1: 0'
-        }, response_metadata={'usage': {'prompt_tokens': 583, 'completion_tokens': 96, 'cache_read_input_tokens': 0, 'cache_write_input_tokens': 0, 'total_tokens': 679
-            }, 'stop_reason': 'tool_use', 'thinking': {}, 'model_id': 'us.anthropic.claude-3-7-sonnet-20250219-v1: 0', 'model_name': 'us.anthropic.claude-3-7-sonnet-20250219-v1: 0'
-        }, id='run--ea754713-6804-40e4-a6cf-63a015eeb2ae-0', tool_calls=[
-            {'name': 'multiply', 'args': {'a': 8, 'b': 12
-                }, 'id': 'toolu_bdrk_01ACeNzP6ka5obEGPJgRKVuM', 'type': 'tool_call'
-            }
-        ], usage_metadata={'input_tokens': 583, 'output_tokens': 96, 'total_tokens': 679, 'input_token_details': {'cache_creation': 0, 'cache_read': 0
-            }
-        }),
-ToolMessage(content='96', name='multiply', id='44b39eda-bea5-40a1-a789-8ad6251454db', tool_call_id='toolu_bdrk_01ACeNzP6ka5obEGPJgRKVuM'),
-AIMessage(content='The answer to (3 + 5) x 12 is 96.', additional_kwargs={'usage': {'prompt_tokens': 691, 'completion_tokens': 22, 'cache_read_input_tokens': 0, 'cache_write_input_tokens': 0, 'total_tokens': 713
-            }, 'stop_reason': 'end_turn', 'thinking': {}, 'model_id': 'us.anthropic.claude-3-7-sonnet-20250219-v1: 0', 'model_name': 'us.anthropic.claude-3-7-sonnet-20250219-v1: 0'
-        }, response_metadata={'usage': {'prompt_tokens': 691, 'completion_tokens': 22, 'cache_read_input_tokens': 0, 'cache_write_input_tokens': 0, 'total_tokens': 713
-            }, 'stop_reason': 'end_turn', 'thinking': {}, 'model_id': 'us.anthropic.claude-3-7-sonnet-20250219-v1: 0', 'model_name': 'us.anthropic.claude-3-7-sonnet-20250219-v1: 0'
-        }, id='run--ffd8572a-1117-4f3a-9f0d-13b7446b1bf7-0', usage_metadata={'input_tokens': 691, 'output_tokens': 22, 'total_tokens': 713, 'input_token_details': {'cache_creation': 0, 'cache_read': 0
-            }
-        })
-    ]
-}
 ```
