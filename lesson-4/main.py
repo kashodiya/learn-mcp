@@ -66,6 +66,12 @@ async def example_usage():
             )
             logger.info(f"Recall original quetion results: {result}")
 
+            result = await llm.generate_str(
+                message="What SQl was used to answer previous question",
+            )
+            logger.info(f"Recall SQL statement: {result}")
+
+
 
 if __name__ == "__main__":
     start = time.time()

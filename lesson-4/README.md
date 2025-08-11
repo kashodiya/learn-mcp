@@ -12,7 +12,10 @@ Create a basic MCP agent with multiple agents that has memory
 - Review main.py how it is using mcp_agent.
 - MCP servers are configured in mcp_agent.config.yaml
 - We are asking the agent to count customers.
-- To check memory we are asking what was the previous question.
+- To check memory we are asking:
+    - What was the previous question.
+    - What SQL was used.
+
 
 ## Prepare
 - Copy mcp_agent.secrets.yaml.example to mcp_agent.secrets.yaml
