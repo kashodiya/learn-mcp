@@ -33,15 +33,16 @@ Learn Model Context Protocol (MCP) through hands-on examples.
    - Install uv: https://docs.astral.sh/uv/getting-started/installation/
       - If you are using PowerShell:
          - If you want to set your path, do this (replace your.username with actual name):
-```powershell
-$env:Path = "D:\Users\your.username\.local\bin;$env:Path".
-```  
+         ```pwsh
+         $env:Path = "D:\Users\your.username\.local\bin;$env:Path".
+         ```
 
          - If you want to set execution policy, use this command:
          
-```powershell
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-```
+         ```pwsh
+         Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+         ```
+
    - Set AWS credentials and AWS_REGION using env vars. Alternatively you can ser AWS profile.
    - Ensure that model us.anthropic.claude-3-7-sonnet-20250219-v1:0 is granted access from Bedrock service.
       - Or, if you want to use any other model just change the client.py code in each lesson.
