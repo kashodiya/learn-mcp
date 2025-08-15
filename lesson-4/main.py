@@ -12,27 +12,11 @@ from mcp_agent.config import (
 from mcp_agent.agents.agent import Agent
 from mcp_agent.workflows.llm.augmented_llm_bedrock import BedrockAugmentedLLM
 
-settings = Settings(
-    execution_engine="asyncio",
-    logger=LoggerSettings(type="file", level="debug"),
-    mcp=MCPSettings(
-        servers={
-            "fetch": MCPServerSettings(
-                command="uvx",
-                args=["mcp-server-fetch"],
-            ),
-        }
-    ),
-    bedrock=BedrockSettings(
-        default_model="anthropic.claude-3-haiku-20240307-v1:0",
-    ),
-)
 
 # Settings can either be specified programmatically,
 # or loaded from mcp_agent.config.yaml/mcp_agent.secrets.yaml
 app = MCPApp(
     name="mcp_basic_agent"
-    # settings=settings
 )
 
 
@@ -55,6 +39,11 @@ async def example_usage():
             logger.info("Tools available:", data=result.model_dump())
 
             llm = await finder_agent.attach_llm(BedrockAugmentedLLM)
+
+            result = await llm.generate_str(
+                message="Fetch https://example.com",
+            )
+            logger.info(f"Content from example.com: {result}")            
 
             result = await llm.generate_str(
                 message="Find out total number of customers in the database.",
